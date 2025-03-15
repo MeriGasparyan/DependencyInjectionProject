@@ -5,7 +5,6 @@ import org.example.infrastructure.annotation.*;
 
 @Component
 public class UserRegistrationService {
-    @Env(environment = "Hello, World!")
     @Inject
     private UserRepository userRepository;
 
