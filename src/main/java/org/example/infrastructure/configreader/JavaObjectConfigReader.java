@@ -32,10 +32,10 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
 
         if (subTypesOf.size() != 1) {
             if (!cls.isAnnotationPresent(Qualifier.class))
-                throw new UnspecifiedImplementationException("Implementation not specified for the interface");
+                throw new UnspecifiedImplementationException("Implementation not specified for the interface " + cls.getName());
             Class<?> impl = cls.getAnnotation(Qualifier.class).implementation();
             if (!cls.isAssignableFrom(impl))
-                throw new NoSuchImplementationException("The interface does not have the mentioned implementation");
+                throw new NoSuchImplementationException("No such implementation " + impl.getName() + " for interface " + cls.getName());
 
             if (!impl.asSubclass(cls).isAnnotationPresent(Component.class))
                 throw new NotFrameworkHandledClassException(

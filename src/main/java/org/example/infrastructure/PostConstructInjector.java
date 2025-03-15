@@ -1,8 +1,6 @@
 package org.example.infrastructure;
 
 import lombok.SneakyThrows;
-import org.example.infrastructure.ApplicationContext;
-import org.example.infrastructure.configurator.ObjectConfigurator;
 import org.example.infrastructure.exceptions.PostConstructorException;
 import org.example.infrastructure.annotation.Env;
 

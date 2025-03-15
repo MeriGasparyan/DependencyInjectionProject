@@ -6,7 +6,6 @@ import org.example.infrastructure.configurator.ObjectConfigurator;
 import org.example.infrastructure.proxywrapper.ProxyWrapper;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

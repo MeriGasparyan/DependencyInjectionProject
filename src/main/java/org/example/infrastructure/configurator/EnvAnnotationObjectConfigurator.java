@@ -3,6 +3,7 @@ package org.example.infrastructure.configurator;
 import lombok.SneakyThrows;
 import org.example.infrastructure.ApplicationContext;
 import org.example.infrastructure.annotation.Env;
+import org.example.infrastructure.exceptions.InvalidEnvironmentException;
 
 import java.lang.reflect.Field;
 
@@ -19,6 +20,8 @@ public class EnvAnnotationObjectConfigurator implements ObjectConfigurator {
                 if (envValue != null) {
                     field.setAccessible(true);
                     field.set(obj, envValue);
+                } else {
+                    throw new InvalidEnvironmentException("Your specified annotation value " + annotation + " for class " + obj.getClass() + " does not exist");
                 }
             }
         }

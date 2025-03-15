@@ -3,10 +3,8 @@ package org.example.infrastructure;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.example.infrastructure.annotation.Component;
 import org.example.infrastructure.annotation.Scope;
 import org.example.infrastructure.configreader.ObjectConfigReader;
-import org.example.infrastructure.exceptions.NotFrameworkHandledClassException;
 
 import java.util.HashMap;
 import java.util.Map;
