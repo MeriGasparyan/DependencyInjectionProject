@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public interface UserRepository {
 
-    void save(User user);
+    User save(User user);
 
     User getUser(String username);
 

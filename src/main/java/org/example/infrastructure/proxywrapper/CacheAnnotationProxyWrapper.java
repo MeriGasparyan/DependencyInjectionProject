@@ -6,6 +6,7 @@ import net.sf.cglib.proxy.Enhancer;
 import org.example.infrastructure.annotation.CacheKey;
 import org.example.infrastructure.annotation.Cacheable;
 import org.example.infrastructure.exceptions.NoCacheKeyException;
+import org.example.infrastructure.exceptions.TooMuchCacheKeyException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,10 +28,7 @@ public class CacheAnnotationProxyWrapper implements ProxyWrapper {
                     new InvocationHandler() {
                         @Override
                         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                            if (method.isAnnotationPresent(Cacheable.class)) {
-                                return methodInvocation(obj, method, args);
-                            }
-                            return method.invoke(obj, args);
+                            return methodInvocation(obj, method, args, cls);
                         }
                     }
             );
@@ -40,34 +38,44 @@ public class CacheAnnotationProxyWrapper implements ProxyWrapper {
                 new net.sf.cglib.proxy.InvocationHandler() {
                     @Override
                     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-                        if (method.isAnnotationPresent(Cacheable.class)) {
-                            return methodInvocation(obj, method, args);
-                        }
-                        return method.invoke(obj, args);
+                        return methodInvocation(obj, method, args, cls);
                     }
                 }
         );
     }
 
     @SneakyThrows
-    private Object methodInvocation(Object obj, Method method, Object[] args) throws Throwable {
-        Object cacheKey = null;
-        for (int i = 0; i < method.getParameters().length; i++) {
-            if (method.getParameters()[i].isAnnotationPresent(CacheKey.class)) {
-                cacheKey = args[i];
-                break;
+    private <T> Object methodInvocation(Object obj, Method method, Object[] args, Class<T> cls) throws Throwable {
+        String methodName = method.getName();
+        Class<?>[] classParameterTypes = method.getParameterTypes();
+        Method originalClassMethod = cls.getMethod(methodName, classParameterTypes);
+        if (originalClassMethod.isAnnotationPresent(Cacheable.class)) {
+            System.out.println("Cacheable class" + originalClassMethod.getName());
+            Object cacheKey = null;
+            for (int i = 0; i < originalClassMethod.getParameters().length; i++) {
+                if (originalClassMethod.getParameters()[i].isAnnotationPresent(CacheKey.class)) {
+                    if (cacheKey == null)
+                        cacheKey = args[i];
+                    else
+                        throw new TooMuchCacheKeyException("There should be a unique cache key for method " + originalClassMethod.getName());
+                }
             }
-        }
-        if (cacheKey != null) {
-            if (!methodCache.containsKey(cacheKey)) {
-                Object result = method.invoke(obj, args);
-                methodCache.put(cacheKey, result);
-                return result;
-            } else {
-                return methodCache.get(cacheKey);
+            if (cacheKey != null) {
+                if (!methodCache.containsKey(cacheKey)) {
+                    Object result = method.invoke(obj, args);
+                    methodCache.put(cacheKey, result);
+                    System.out.println("Caching method " + method.getName());
+                    for (Map.Entry<Object, Object> entry : methodCache.entrySet()) {
+                        System.out.println(entry.getKey() + "/" + entry.getValue());
+                    }
+                    return result;
+                } else {
+                    return methodCache.get(cacheKey);
+                }
             }
-        }
 
-        throw new NoCacheKeyException("No cache key found");
+            throw new NoCacheKeyException("No cache key found for method " + originalClassMethod.getName());
+        }
+        return method.invoke(obj, args);
     }
 }

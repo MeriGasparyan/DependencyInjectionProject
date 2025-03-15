@@ -16,7 +16,6 @@ public class LogAnnotationProxyWrapper implements ProxyWrapper {
     @SuppressWarnings("unchecked")
     public <T> T wrap(T obj, Class<T> cls) {
         if (!cls.isAnnotationPresent(Log.class)) {
-            System.out.println(cls.toString());
             if (cls.isInterface() || cls.getInterfaces().length != 0) {
                 return (T) Proxy.newProxyInstance(
                         cls.getClassLoader(),
@@ -30,9 +29,10 @@ public class LogAnnotationProxyWrapper implements ProxyWrapper {
                                 if (originalClassMethod.isAnnotationPresent(Log.class)) {
                                     System.out.printf(
                                             "Calling method: %s. Args: %s\n", method.getName(), Arrays.toString(args));
-                                    return method.invoke(obj, args);
+
                                 }
-                                return obj;
+                                return method.invoke(obj, args);
+                                //return obj;
                             }
                         }
                 );
@@ -48,9 +48,10 @@ public class LogAnnotationProxyWrapper implements ProxyWrapper {
                             if (originalClassMethod.isAnnotationPresent(Log.class)) {
                                 System.out.printf(
                                         "Calling method: %s. Args: %s\n", method.getName(), Arrays.toString(args));
-                                return method.invoke(obj, args);
+
                             }
-                            return obj;
+                            return method.invoke(obj, args);
+                            //return obj;
                         }
                     }
             );

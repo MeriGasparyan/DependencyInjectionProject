@@ -1,5 +1,7 @@
 package org.example.app;
 
+import org.example.infrastructure.annotation.CacheKey;
+import org.example.infrastructure.annotation.Cacheable;
 import org.example.infrastructure.annotation.Log;
 import org.example.infrastructure.annotation.Scope;
 
@@ -12,13 +14,13 @@ public class UserInMemoryRepository implements UserRepository {
     private List<User> users = new ArrayList<>();
 
     public UserInMemoryRepository() {
-        System.out.println("UserInMemoryRepository constructor call");
     }
 
     @Override
-
-    public void save(User user) {
+    @Cacheable
+    public User save(@CacheKey User user) {
         users.add(user);
+        return user;
     }
 
     @Override

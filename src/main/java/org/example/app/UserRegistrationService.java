@@ -12,7 +12,7 @@ public class UserRegistrationService {
     @Inject
     private EmailSender emailSender;
 
-    @Cacheable
+
     @Log
     public void register(@CacheKey User user) {
         User existingUser = userRepository.getUser(user.getUsername());
@@ -23,11 +23,11 @@ public class UserRegistrationService {
         }
 
         userRepository.save(user);
-
         emailSender.send(
                 user.getEmail(),
                 "Account confirmation",
                 "Please confirm your newly created account"
         );
     }
+
 }

@@ -1,11 +1,14 @@
 package org.example.app;
 
+import org.example.infrastructure.annotation.CacheKey;
+import org.example.infrastructure.annotation.Cacheable;
+
 import java.util.List;
 
 public class UserDatabaseRepository implements UserRepository {
     @Override
-    public void save(User user) {
-
+    public User save(User user) {
+        return null;
     }
 
     @Override
