@@ -22,26 +22,19 @@ public class CacheAnnotationProxyWrapper implements ProxyWrapper {
     public <T> T wrap(T obj, Class<T> cls) {
 
         if (cls.getInterfaces().length != 0) {
-            return (T) Proxy.newProxyInstance(
-                    cls.getClassLoader(),
-                    cls.getInterfaces(),
-                    new InvocationHandler() {
-                        @Override
-                        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                            return methodInvocation(obj, method, args, cls);
-                        }
-                    }
-            );
-        }
-        return (T) Enhancer.create(
-                cls,
-                new net.sf.cglib.proxy.InvocationHandler() {
-                    @Override
-                    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-                        return methodInvocation(obj, method, args, cls);
-                    }
+            return (T) Proxy.newProxyInstance(cls.getClassLoader(), cls.getInterfaces(), new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    return methodInvocation(obj, method, args, cls);
                 }
-        );
+            });
+        }
+        return (T) Enhancer.create(cls, new net.sf.cglib.proxy.InvocationHandler() {
+            @Override
+            public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+                return methodInvocation(obj, method, args, cls);
+            }
+        });
     }
 
     @SneakyThrows
@@ -54,8 +47,7 @@ public class CacheAnnotationProxyWrapper implements ProxyWrapper {
             Object cacheKey = null;
             for (int i = 0; i < originalClassMethod.getParameters().length; i++) {
                 if (originalClassMethod.getParameters()[i].isAnnotationPresent(CacheKey.class)) {
-                    if (cacheKey == null)
-                        cacheKey = args[i];
+                    if (cacheKey == null) cacheKey = args[i];
                     else
                         throw new TooMuchCacheKeyException("There should be a unique cache key for method " + originalClassMethod.getName());
                 }

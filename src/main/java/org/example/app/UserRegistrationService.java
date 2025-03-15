@@ -16,17 +16,11 @@ public class UserRegistrationService {
     public void register(@CacheKey User user) {
         User existingUser = userRepository.getUser(user.getUsername());
         if (existingUser != null) {
-            throw new UserAlreadyExistsException(
-                    "User is already registered. Username: " + user.getUsername()
-            );
+            throw new UserAlreadyExistsException("User is already registered. Username: " + user.getUsername());
         }
 
         userRepository.save(user);
-        emailSender.send(
-                user.getEmail(),
-                "Account confirmation",
-                "Please confirm your newly created account"
-        );
+        emailSender.send(user.getEmail(), "Account confirmation", "Please confirm your newly created account");
     }
 
 }

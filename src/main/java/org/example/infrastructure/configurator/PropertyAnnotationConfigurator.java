@@ -19,9 +19,7 @@ public class PropertyAnnotationConfigurator implements ObjectConfigurator {
     public PropertyAnnotationConfigurator() {
         String path = ClassLoader.getSystemClassLoader().getResource("application.properties").getPath();
         Stream<String> lines = new BufferedReader(new FileReader(path)).lines();
-        propertiesMap = lines.map(line -> line.split("=", 2))
-                .filter(arr -> arr.length == 2)
-                .collect(toMap(arr -> arr[0].trim(), arr -> arr[1].trim()));
+        propertiesMap = lines.map(line -> line.split("=", 2)).filter(arr -> arr.length == 2).collect(toMap(arr -> arr[0].trim(), arr -> arr[1].trim()));
 
     }
 

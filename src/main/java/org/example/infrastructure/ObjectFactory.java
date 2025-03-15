@@ -25,8 +25,7 @@ public class ObjectFactory {
     }
 
     private void populateObjectConfigurators() throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Collection<Class<? extends ObjectConfigurator>> implClasses =
-                applicationContext.getObjectConfigReader().getImplClasses(ObjectConfigurator.class);
+        Collection<Class<? extends ObjectConfigurator>> implClasses = applicationContext.getObjectConfigReader().getImplClasses(ObjectConfigurator.class);
         for (Class<? extends ObjectConfigurator> implClass : implClasses) {
             ObjectConfigurator objectConfigurator = implClass.getDeclaredConstructor().newInstance();
 

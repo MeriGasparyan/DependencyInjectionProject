@@ -23,9 +23,7 @@ public class InjectAnnotationObjectConfigurator implements ObjectConfigurator {
                 Set<Class<?>> subTypesOf = reflections.getSubTypesOf((Class<Object>) field.getType());
                 for (Class<?> aClass : subTypesOf) {
                     if (!aClass.isAnnotationPresent(Component.class)) {
-                        throw new NotFrameworkHandledClassException(
-                                "Class " + aClass.getName() + " is not handled by the framework and should be created manually"
-                        );
+                        throw new NotFrameworkHandledClassException("Class " + aClass.getName() + " is not handled by the framework and should be created manually");
                     }
                 }
 

@@ -27,8 +27,7 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
         if (!cls.isInterface()) {
             return cls;
         }
-        Set<Class<? extends T>> subTypesOf =
-                reflections.getSubTypesOf(cls);
+        Set<Class<? extends T>> subTypesOf = reflections.getSubTypesOf(cls);
 
         if (subTypesOf.size() != 1) {
             if (!cls.isAnnotationPresent(Qualifier.class))
@@ -38,9 +37,7 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
                 throw new NoSuchImplementationException("No such implementation " + impl.getName() + " for interface " + cls.getName());
 
             if (!impl.asSubclass(cls).isAnnotationPresent(Component.class))
-                throw new NotFrameworkHandledClassException(
-                        "Class " + impl.asSubclass(cls).getName() + " is not handled by the framework and should be created manually"
-                );
+                throw new NotFrameworkHandledClassException("Class " + impl.asSubclass(cls).getName() + " is not handled by the framework and should be created manually");
             return impl.asSubclass(cls);
         }
 

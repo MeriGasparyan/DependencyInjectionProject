@@ -26,20 +26,20 @@ public class ApplicationContext {
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public <T> T getObject(Class<T> cls) {
-            Class<? extends T> implClass = objectConfigReader.getImplClass(cls);
+        Class<? extends T> implClass = objectConfigReader.getImplClass(cls);
 
-            if (singletonCache.containsKey(implClass)) {
-                return (T) singletonCache.get(implClass);
+        if (singletonCache.containsKey(implClass)) {
+            return (T) singletonCache.get(implClass);
+        }
+
+        T object = objectFactory.createObject(implClass);
+
+        if (implClass.isAnnotationPresent(Scope.class)) {
+            if (implClass.getAnnotation(Scope.class).scope().equals(ScopeType.SINGLETON)) {
+                singletonCache.put(implClass, object);
             }
-
-            T object = objectFactory.createObject(implClass);
-
-            if (implClass.isAnnotationPresent(Scope.class)) {
-                if (implClass.getAnnotation(Scope.class).scope().equals(ScopeType.SINGLETON)) {
-                    singletonCache.put(implClass, object);
-                }
-            }
-            return object;
+        }
+        return object;
 
     }
 }
