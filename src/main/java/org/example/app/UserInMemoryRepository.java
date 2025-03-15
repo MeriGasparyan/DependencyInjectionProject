@@ -1,14 +1,12 @@
 package org.example.app;
 
-import org.example.infrastructure.annotation.CacheKey;
-import org.example.infrastructure.annotation.Cacheable;
-import org.example.infrastructure.annotation.Log;
-import org.example.infrastructure.annotation.Scope;
+import org.example.infrastructure.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Scope
+@Component
 public class UserInMemoryRepository implements UserRepository {
 
     private List<User> users = new ArrayList<>();

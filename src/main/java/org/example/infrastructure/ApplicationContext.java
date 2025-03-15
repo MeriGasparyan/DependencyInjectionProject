@@ -28,13 +28,6 @@ public class ApplicationContext {
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public <T> T getObject(Class<T> cls) {
-        if (!cls.isAnnotationPresent(Component.class)) {
-            throw new NotFrameworkHandledClassException(
-                    "Class " + cls.getName() + " is not handled by the framework and should be created manually"
-            );
-        }
-        if (cls.isAnnotationPresent(Component.class)) {
-
             Class<? extends T> implClass = objectConfigReader.getImplClass(cls);
 
             if (singletonCache.containsKey(implClass)) {
@@ -48,10 +41,8 @@ public class ApplicationContext {
                     singletonCache.put(implClass, object);
                 }
             }
-
             return object;
-        }
-        throw new NotFrameworkHandledClassException("This class type is not handled by the framework and should be created manually");
+
     }
 }
 

@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.example.infrastructure.annotation.Component;
 import org.example.infrastructure.annotation.Qualifier;
 import org.example.infrastructure.exceptions.NoSuchImplementationException;
+import org.example.infrastructure.exceptions.NotFrameworkHandledClassException;
 import org.example.infrastructure.exceptions.UnspecifiedImplementationException;
 import org.reflections.Reflections;
 
@@ -26,7 +27,11 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
         if (!cls.isInterface()) {
             return cls;
         }
-
+//        if (!cls.isAnnotationPresent(Component.class)) {
+//            throw new NotFrameworkHandledClassException(
+//                    "Class " + cls.getName() + " is not handled by the framework and should be created manually"
+//            );
+//        }
         Set<Class<? extends T>> subTypesOf =
                 reflections.getSubTypesOf(cls);
 
@@ -36,6 +41,11 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
             Class<?> impl = cls.getAnnotation(Qualifier.class).implementation();
             if (!cls.isAssignableFrom(impl))
                 throw new NoSuchImplementationException("The interface does not have the mentioned implementation");
+
+            if (!impl.asSubclass(cls).isAnnotationPresent(Component.class))
+                throw new NotFrameworkHandledClassException(
+                        "Class " + impl.asSubclass(cls).getName() + " is not handled by the framework and should be created manually"
+                );
             return impl.asSubclass(cls);
         }
 

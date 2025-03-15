@@ -1,7 +1,9 @@
 package org.example.app;
 
+import org.example.infrastructure.annotation.Component;
 import org.example.infrastructure.annotation.Log;
 
+@Component
 public class DefaultEmailSender implements EmailSender {
 
     @Override
