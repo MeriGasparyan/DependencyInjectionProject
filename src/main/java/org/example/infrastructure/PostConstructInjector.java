@@ -1,16 +1,18 @@
-package org.example.infrastructure.configurator;
+package org.example.infrastructure;
 
 import lombok.SneakyThrows;
 import org.example.infrastructure.ApplicationContext;
+import org.example.infrastructure.configurator.ObjectConfigurator;
 import org.example.infrastructure.exceptions.PostConstructorException;
 import org.example.infrastructure.annotation.Env;
 
 import java.lang.reflect.Method;
 
-public class PostConstructAnnotationConfigurator implements ObjectConfigurator {
-    @Override
+public class PostConstructInjector {
+
     @SneakyThrows
-    public void configure(Object obj, ApplicationContext context) {
+    public void inject(Object obj, ApplicationContext context) {
+        System.out.println("Post Construct Invoked for class " + obj.getClass());
         Method[] declaredMethods = obj.getClass().getDeclaredMethods();
         for (Method method : declaredMethods) {
             if (method.isAnnotationPresent(Env.class)) {

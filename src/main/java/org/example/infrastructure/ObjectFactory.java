@@ -16,6 +16,7 @@ public class ObjectFactory {
     private ApplicationContext applicationContext;
     private List<ObjectConfigurator> objectConfigurators = new ArrayList<>();
     private List<ProxyWrapper> proxyWrappers = new ArrayList<>();
+    private PostConstructInjector postConstructInjector = new PostConstructInjector();
 
     @SneakyThrows
     public ObjectFactory(ApplicationContext applicationContext) {
@@ -44,11 +45,10 @@ public class ObjectFactory {
     @SneakyThrows
     public <T> T createObject(Class<T> cls) {
         T obj = cls.getDeclaredConstructor().newInstance();
-
         for (ObjectConfigurator objectConfigurator : objectConfigurators) {
             objectConfigurator.configure(obj, applicationContext);
         }
-
+        postConstructInjector.inject(obj, applicationContext);
         for (ProxyWrapper proxyWrapper : proxyWrappers) {
             obj = proxyWrapper.wrap(obj, cls);
         }

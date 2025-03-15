@@ -27,11 +27,6 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
         if (!cls.isInterface()) {
             return cls;
         }
-//        if (!cls.isAnnotationPresent(Component.class)) {
-//            throw new NotFrameworkHandledClassException(
-//                    "Class " + cls.getName() + " is not handled by the framework and should be created manually"
-//            );
-//        }
         Set<Class<? extends T>> subTypesOf =
                 reflections.getSubTypesOf(cls);
 
