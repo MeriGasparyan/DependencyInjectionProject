@@ -6,7 +6,7 @@ import net.sf.cglib.proxy.Enhancer;
 import org.example.infrastructure.annotation.CacheKey;
 import org.example.infrastructure.annotation.Cacheable;
 import org.example.infrastructure.exceptions.NoCacheKeyException;
-import org.example.infrastructure.exceptions.TooMuchCacheKeyException;
+import org.example.infrastructure.exceptions.MultipleCacheKeysForMethodException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -49,7 +49,7 @@ public class CacheAnnotationProxyWrapper implements ProxyWrapper {
                 if (originalClassMethod.getParameters()[i].isAnnotationPresent(CacheKey.class)) {
                     if (cacheKey == null) cacheKey = args[i];
                     else
-                        throw new TooMuchCacheKeyException("There should be a unique cache key for method " + originalClassMethod.getName());
+                        throw new MultipleCacheKeysForMethodException("There should be a unique cache key for method " + originalClassMethod.getName());
                 }
             }
             if (cacheKey != null) {
