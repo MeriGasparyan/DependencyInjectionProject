@@ -29,9 +29,8 @@ public class InjectAnnotationObjectConfigurator implements ObjectConfigurator {
                         throw new NotFrameworkHandledClassException("Class " + impl.getName() + " is not handled by the framework and should be created manually");
                     }
                     field.set(obj, context.getObject(field.getType(), impl));
-                }
-
-                field.set(obj, context.getObject(field.getType()));
+                } else
+                    field.set(obj, context.getObject(field.getType()));
             }
         }
     }

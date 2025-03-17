@@ -48,11 +48,12 @@ public class JavaObjectConfigReader implements ObjectConfigReader {
         Set<Class<? extends T>> subTypesOf = reflections.getSubTypesOf(cls);
         Class<?> impl;
         if (subTypesOf.size() != 1) {
-            impl = cls.getAnnotation(Qualifier.class).implementation();
-            return impl.asSubclass(cls);
+            impl = getImplClass(cls, cls.getAnnotation(Qualifier.class).implementation());
         } else {
             impl = subTypesOf.iterator().next();
         }
+        System.out.println(cls.getName() + " class " + impl.getName() + " field annotation: " +
+                impl.isAnnotationPresent(Component.class));
         if (!impl.isAnnotationPresent(Component.class))
             throw new NotFrameworkHandledClassException("Class " + impl.asSubclass(cls).getName()
                     + " is not handled by the framework and should be created manually");
