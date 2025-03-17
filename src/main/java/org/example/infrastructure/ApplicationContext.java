@@ -17,8 +17,6 @@ public class ApplicationContext {
     @Getter
     private ObjectConfigReader objectConfigReader;
 
-    private Map<Class<?>, Object> singletonCache = new HashMap<>();
-
     public ApplicationContext(ObjectConfigReader objectConfigReader) {
         this.objectConfigReader = objectConfigReader;
     }
