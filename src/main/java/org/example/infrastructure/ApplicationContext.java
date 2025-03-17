@@ -27,20 +27,13 @@ public class ApplicationContext {
     @SneakyThrows
     public <T> T getObject(Class<T> cls) {
         Class<? extends T> implClass = objectConfigReader.getImplClass(cls);
+        return (T) objectConfigReader.configScope(implClass, objectFactory);
 
-        if (singletonCache.containsKey(implClass)) {
-            return (T) singletonCache.get(implClass);
-        }
+    }
 
-        T object = objectFactory.createObject(implClass);
-
-        if (implClass.isAnnotationPresent(Scope.class)) {
-            if (implClass.getAnnotation(Scope.class).scope().equals(ScopeType.SINGLETON)) {
-                singletonCache.put(implClass, object);
-            }
-        }
-        return object;
-
+    public <T> T getObject(Class<T> cls, Class<?> qualifier) {
+        Class<?> impClass = objectConfigReader.getImplClass(cls, qualifier);
+        return (T) objectFactory.createObject(impClass);
     }
 }
 

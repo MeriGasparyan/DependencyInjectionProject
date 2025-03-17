@@ -4,7 +4,10 @@ import lombok.SneakyThrows;
 import org.example.infrastructure.ApplicationContext;
 import org.example.infrastructure.annotation.Component;
 import org.example.infrastructure.annotation.Inject;
+import org.example.infrastructure.annotation.Qualifier;
+import org.example.infrastructure.exceptions.NoSuchImplementationException;
 import org.example.infrastructure.exceptions.NotFrameworkHandledClassException;
+import org.example.infrastructure.exceptions.UnspecifiedImplementationException;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
@@ -19,12 +22,13 @@ public class InjectAnnotationObjectConfigurator implements ObjectConfigurator {
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(Inject.class)) {
                 field.setAccessible(true);
-                Reflections reflections = new Reflections("org.example");
-                Set<Class<?>> subTypesOf = reflections.getSubTypesOf((Class<Object>) field.getType());
-                for (Class<?> aClass : subTypesOf) {
-                    if (!aClass.isAnnotationPresent(Component.class)) {
-                        throw new NotFrameworkHandledClassException("Class " + aClass.getName() + " is not handled by the framework and should be created manually");
+
+                if (field.isAnnotationPresent(Qualifier.class)) {
+                    Class<?> impl = field.getAnnotation(Qualifier.class).implementation();
+                    if (!impl.isAnnotationPresent(Component.class)) {
+                        throw new NotFrameworkHandledClassException("Class " + impl.getName() + " is not handled by the framework and should be created manually");
                     }
+                    field.set(obj, context.getObject(field.getType(), impl));
                 }
 
                 field.set(obj, context.getObject(field.getType()));
