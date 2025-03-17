@@ -12,6 +12,7 @@ public class UserInMemoryRepository implements UserRepository {
     private List<User> users = new ArrayList<>();
 
     public UserInMemoryRepository() {
+        System.out.println(111);
     }
 
     @Override

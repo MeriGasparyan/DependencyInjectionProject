@@ -1,6 +1,7 @@
 package org.example.infrastructure;
 
 import lombok.SneakyThrows;
+import org.example.infrastructure.annotation.PostConstruct;
 import org.example.infrastructure.exceptions.PostConstructorException;
 import org.example.infrastructure.annotation.Env;
 
@@ -13,7 +14,7 @@ public class PostConstructInjector {
         System.out.println("Post Construct Invoked for class " + obj.getClass());
         Method[] declaredMethods = obj.getClass().getDeclaredMethods();
         for (Method method : declaredMethods) {
-            if (method.isAnnotationPresent(Env.class)) {
+            if (method.isAnnotationPresent(PostConstruct.class)) {
                 if (method.getParameterCount() == 0) {
                     method.setAccessible(true);
                     method.invoke(obj);
